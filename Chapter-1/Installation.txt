@@ -1,6 +1,10 @@
-Reference Documentation:
+OS: 
+Ubuntu 22.04
 
+Reference Documentation:
 https://docs.docker.com/install/linux/docker-ce/ubuntu/
+
+-------------------------------------------------------------------------------------------------------------
 
 1.) Update/Refresh the apt.
 
