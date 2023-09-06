@@ -1,0 +1,128 @@
+Reference Documentation:
+
+https://docs.docker.com/install/linux/docker-ce/ubuntu/
+
+1.) Update/Refresh the apt.
+
+root@docker:~# apt-get update
+Hit:1 http://nova.clouds.archive.ubuntu.com/ubuntu jammy InRelease
+Get:2 http://nova.clouds.archive.ubuntu.com/ubuntu jammy-updates InRelease [119 kB]
+[...]
+
+2.) Install Required packages:
+
+root@docker:~#  apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  libcurl4 python3-software-properties
+The following NEW packages will be installed:
+  apt-transport-https gnupg-agent
+The following packages will be upgraded:
+  ca-certificates curl libcurl4 python3-software-properties software-properties-common
+5 upgraded, 2 newly installed, 0 to remove and 196 not upgraded.
+Need to get 690 kB of archives.
+After this operation, 238 kB of additional disk space will be used.
+Do you want to continue? [Y/n] Y
+[...]
+
+3.) Add the Docker GPG key and repo:
+
+root@docker:~# curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+Warning: apt-key is deprecated. Manage keyring files in trusted.gpg.d instead (see apt-key(8)).
+OK
+
+root@docker:~# add-apt-repository \
+> "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+> $(lsb_release -cs) \
+> stable"
+Repository: 'deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable'
+Description:
+Archive for codename: jammy components: stable
+More info: https://download.docker.com/linux/ubuntu
+Adding repository.
+Press [ENTER] to continue or Ctrl-c to cancel.
+Adding deb entry to /etc/apt/sources.list.d/archive_uri-https_download_docker_com_linux_ubuntu-jammy.list
+Adding disabled deb-src entry to /etc/apt/sources.list.d/archive_uri-https_download_docker_com_linux_ubuntu-jammy.list
+
+4.) Install Docker CE packages:
+
+root@docker:~# apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  docker-ce-rootless-extras libltdl7 libslirp0 pigz slirp4netns
+Suggested packages:
+  aufs-tools cgroupfs-mount | cgroup-lite
+The following NEW packages will be installed:
+  containerd.io docker-buildx-plugin docker-ce docker-ce-cli docker-ce-rootless-extras docker-compose-plugin libltdl7 libslirp0 pigz slirp4netns
+0 upgraded, 10 newly installed, 0 to remove and 196 not upgraded.
+Need to get 114 MB of archives.
+After this operation, 415 MB of additional disk space will be used.
+Do you want to continue? [Y/n] Y
+Get:1 https://download.docker.com/linux/ubuntu jammy/stable amd64 containerd.io amd64 1.6.22-1 [28.3 MB]
+[...]
+Setting up docker-buildx-plugin (0.11.2-1~ubuntu.22.04~jammy) ...
+Setting up containerd.io (1.6.22-1) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/containerd.service → /lib/systemd/system/containerd.service.
+Setting up docker-compose-plugin (2.20.2-1~ubuntu.22.04~jammy) ...
+Setting up libltdl7:amd64 (2.4.6-15build2) ...
+Setting up docker-ce-cli (5:24.0.5-1~ubuntu.22.04~jammy) ...
+Setting up libslirp0:amd64 (4.6.1-1build1) ...
+Setting up pigz (2.6-1) ...
+Setting up docker-ce-rootless-extras (5:24.0.5-1~ubuntu.22.04~jammy) ...
+Setting up slirp4netns (1.0.1-2) ...
+Setting up docker-ce (5:24.0.5-1~ubuntu.22.04~jammy) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/docker.service → /lib/systemd/system/docker.service.
+Created symlink /etc/systemd/system/sockets.target.wants/docker.socket → /lib/systemd/system/docker.socket.
+Processing triggers for man-db (2.10.2-1) ...
+Processing triggers for libc-bin (2.35-0ubuntu3) ...
+Scanning processes...
+Scanning linux images...
+[...]
+
+5.) Add a dedicated user and assign it to docker group:
+
+root@docker:~# adduser dadmin
+Adding user `dadmin' ...
+[...]
+root@docker:~# su - dadmin
+dadmin@gnan1079-docker:~$ docker version
+
+root@docker:~# usermod -a -G docker dadmin
+root@docker:~# su - dadmin
+dadmin@docker:~$
+
+6.) Test the installation by running a simple container:
+
+dadmin@docker:~$ docker run hello-world
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+719385e32844: Pull complete
+Digest: sha256:dcba6daec718f547568c562956fa47e1b03673dd010fe6ee58ca806767031d1c
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+
+dadmin@docker:~$
