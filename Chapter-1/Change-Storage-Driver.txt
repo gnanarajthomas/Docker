@@ -1,0 +1,26 @@
+1.) Check the current storage driver:
+
+dadmin@docker:~$ docker info | grep -i storage
+ Storage Driver: overlay2
+
+2.) We can set the storage driver explicitly using the daemon configuration file. This is the Docker recommended method.
+Note that we cannot do this and pass the --storage-driver flag to the daemon at the same time:
+ 
+dadmin@docker:~$ ls -l /etc/docker/daemon.json
+ls: cannot access '/etc/docker/daemon.json': No such file or directory
+
+dadmin@docker:~$ sudo vim /etc/docker/daemon.json
+
+dadmin@docker:~$ cat /etc/docker/daemon.json
+{
+"storage-driver": "devicemapper"
+}
+
+3.) Restart the service to take this in effect:
+
+dadmin@docker:~$ sudo systemctl restart docker
+
+4.) Now again check the docker storage driver:
+
+dadmin@docker:~$ docker info | grep -i storage
+ Storage Driver: devicemapper
