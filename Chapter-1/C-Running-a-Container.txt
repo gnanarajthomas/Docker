@@ -1,0 +1,138 @@
+Executing containers is the core feature of Docker. 
+In this lesson we will dive into the process of executing containers using docker run. 
+We will demonstrate how to use this command, and learn some of the important options and flags that can be used with it.
+
+
+Reference Documentation:
+https://docs.docker.com/engine/reference/run/
+
+1.) Run a simple container.
+
+dadmin@docker:~$ docker run hello-world
+
+Hello from Docker!
+
+============================================================================================
+
+2.) Run a container with spefic image tag:
+
+dadmin@docker:~$ docker run nginx:1.15.11
+Unable to find image 'nginx:1.15.11' locally
+1.15.11: Pulling from library/nginx
+27833a3ba0a5: Pull complete
+eb51733b5bc0: Pull complete
+994d4a01fbe9: Pull complete
+Digest: sha256:50174b19828157e94f8273e3991026dc7854ec7dd2bbb33e7d3bd91f0a4b333d
+Status: Downloaded newer image for nginx:1.15.11
+
+============================================================================================
+
+3.) Run a container and execute commands:
+
+dadmin@docker:~$ docker run busybox echo dadmin docker training
+Unable to find image 'busybox:latest' locally
+latest: Pulling from library/busybox
+3f4d90098f5b: Pull complete
+Digest: sha256:3fbc632167424a6d997e74f52b878d7cc478225cffac6bc977eedfe51c7f4e79
+Status: Downloaded newer image for busybox:latest
+dadmin docker training
+
+============================================================================================
+
+4.) Running container with multiple options:
+
+-------------
+a.) Run container with specific name:
+
+dadmin@docker:~$ docker run --name dadmin_naming hello-world
+
+Hello from Docker!
+
+dadmin@docker:~$ docker ps -a
+CONTAINER ID   IMAGE         COMMAND    CREATED         STATUS                     PORTS     NAMES
+4bd4a7e27b82   hello-world   "/hello"   3 seconds ago   Exited (0) 3 seconds ago             dadmin_naming
+-------------
+
+b.) Run container in detatched mode:
+
+dadmin@docker:~$ docker run -d nginx
+Unable to find image 'nginx:latest' locally
+latest: Pulling from library/nginx
+360eba32fa65: Pull complete
+c5903f3678a7: Pull complete
+27e923fb52d3: Pull complete
+72de7d1ce3a4: Pull complete
+94f34d60e454: Pull complete
+e42dcfe1730b: Pull complete
+907d1bb4e931: Pull complete
+Digest: sha256:6926dd802f40e5e7257fded83e0d8030039642e4e10c4a98a6478e9c6fe06153
+Status: Downloaded newer image for nginx:latest
+e389a1adde8a6ee460c1baa81324628a1682f695bf47509255ef078607acaeeb
+
+dadmin@docker:~$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS     NAMES
+e389a1adde8a   nginx     "/docker-entrypoint.…"   23 seconds ago   Up 22 seconds   80/tcp    dazzling_kirch
+-------------
+
+c.) Run container with Restart policies:
+
+no				- 	Do not automatically restart the container when it exits. This is the default.
+on-failure[:max-retries]	-	Restart only if the container exits with a non-zero exit status. 	
+					Optionally, limit the number of restart retries the Docker daemon attempts.
+always				-	Always restart the container regardless of the exit status. 
+					When you specify always, the Docker daemon will try to restart the container indefinitely.
+					The container will also always start on daemon startup, regardless of the current state of the container.
+unless-stopped			-	Always restart the container regardless of the exit status, including on daemon startup, 
+					except if the container was put into a stopped state before the Docker daemon was stopped.
+
+
+dadmin@docker:~$ docker run --restart unless-stopped busybox
+
+dadmin@docker:~$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS                        PORTS     NAMES
+4f7864614574   busybox   "sh"                     30 seconds ago   Restarting (0) 1 second ago             festive_robinson
+-------------
+
+d.) Run with multiple options:
+
+dadmin@docker:~$ docker run -d --name dadmin_nginx --restart unless-stopped -p 8080:80 --memory 500M --memory-reservation 256M nginx
+62e02000c3afb6060bcc46cb1bc977ba25b3029ce8c2916d143ad9857d5784a7
+
+
+============================================================================================
+
+5.) List any currently running containers:
+
+dadmin@docker:~$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED              STATUS              PORTS                                   NAMES
+62e02000c3af   nginx     "/docker-entrypoint.…"   About a minute ago   Up About a minute   0.0.0.0:8080->80/tcp, :::8080->80/tcp   dadmin_nginx
+
+============================================================================================
+
+6.) List all containers, both running and stopped:
+
+dadmin@docker:~$ docker ps -a
+CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS                      PORTS                                   NAMES
+160d54868a0d   hello-world   "/hello"                 58 seconds ago   Exited (0) 58 seconds ago                                           confident_herschel
+62e02000c3af   nginx         "/docker-entrypoint.…"   2 minutes ago    Up 2 minutes                0.0.0.0:8080->80/tcp, :::8080->80/tcp   dadmin_nginx
+
+============================================================================================
+
+7.) Start/Stop the Nginx container:
+
+dadmin@docker:~$ docker stop dadmin_nginx
+dadmin_nginx
+dadmin@docker:~$ docker start dadmin_nginx
+dadmin_nginx
+
+
+============================================================================================
+
+8.) Delete a container (but it must be stopped first):
+
+dadmin@docker:~$ docker stop dadmin_nginx
+dadmin_nginx
+dadmin@docker:~$ docker rm dadmin_nginx
+dadmin_nginx
+
+============================================================================================
