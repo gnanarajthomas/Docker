@@ -1,0 +1,29 @@
+Logging Driver:
+
+Docker includes multiple logging mechanisms to help you get information from running containers and services. These mechanisms are called logging drivers.
+
+System-wide value of logging driver is actually a default, which we can then override for individual containers
+
+1.) To get default/configured logging driver:
+
+dadmin@docker-u22:~$ docker info --format '{{.LoggingDriver}}'
+json-file
+
+dadmin@docker-u22:~$ docker info | grep -i Logging
+ Logging Driver: json-file
+
+2.) To set logging driver for a specific container:
+
+dadmin@docker-u22:~$ docker run -d --name nginx_syslog_logging_testing --log-driver syslog nginx
+f234d8a8a48348aebb0da361f7d5ba356ce7a0753973c61e7ce1ee49cf2e4ace
+
+After overriding the default value for a specific container with "syslog" it can be tested by checking the logs in "/var/log/syslog".
+
+3.) To set default logging driver:
+
+root@docker-u22:~# vim /etc/docker/daemon.json
+root@docker-u22:~# cat /etc/docker/daemon.json
+{
+        "log-driver": "syslog"
+}
+
